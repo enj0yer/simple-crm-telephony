@@ -4,7 +4,7 @@
     "type": "library",
     "license": "MIT",
     "scripts": {
-        "test": "APP_ENV=test ./vendor/phpunit/phpunit/phpunit ./tests"
+        "test": "./vendor/phpunit/phpunit/phpunit ./tests"
     },
     "autoload": {
         "psr-4": {
