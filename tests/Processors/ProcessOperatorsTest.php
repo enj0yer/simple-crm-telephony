@@ -6,12 +6,15 @@ use Enj0yer\CrmTelephony\TelephonyRawApiService;
 use Enj0yer\CrmTelephony\TelephonyService;
 use ReflectionClass;
 use PHPUnit\Framework\TestCase;
+use function Enj0yer\CrmTelephony\Tests\bootstrapFacades;
 
 class ProcessOperatorsTest extends TestCase
 {
-    /**
-     * @depends TelephonyServiceTest::testRawApiServiceMethods
-     */
+    protected function setUp(): void
+    {
+        parent::setUp();
+        bootstrapFacades();
+    }
     public function testGetAll()
     {
         $processor = TelephonyService::apiService()->operators();
@@ -19,5 +22,7 @@ class ProcessOperatorsTest extends TestCase
         $this->assertTrue($reflectedProcessor->hasMethod('getAll'));
         $method = $reflectedProcessor->getMethod('getAll');
         $this->assertEquals(0, $method->getNumberOfParameters());
+        $processor->getAll();
+        
     }
 }

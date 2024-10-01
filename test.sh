@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if [$1 -eq ''] 
+if [ -z "$1" ] 
 then 
     echo "You need to specify TELEPHONY_REMOTE_SERVER as first argument"
     exit;

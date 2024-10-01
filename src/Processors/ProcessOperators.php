@@ -3,6 +3,7 @@
 namespace Enj0yer\CrmTelephony\Processors;
 
 use Enj0yer\CrmTelephony\Exceptions\TelephonyHandlerInputDataValidationException;
+use Illuminate\Http\Client\Request;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
