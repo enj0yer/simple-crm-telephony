@@ -9,7 +9,7 @@ use function Enj0yer\CrmTelephony\Helpers\normalizeUrl;
 
 abstract class AbstractProcessor
 {
-    public string $prefix;
+    public readonly string $prefix;
 
     /**
      * @throws InvalidTelephonyConfigValueException
