@@ -12,6 +12,7 @@
         },
         "files": [
             "src/Helpers/functions.php",
+            "src/Helpers/validators.php",
             "tests/helpers.php"
         ]
     },
