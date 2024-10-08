@@ -16,3 +16,8 @@ function isAssocArrayWithStringNonEmptyKeys(array $array): bool
 {
     return !with($array, fn ($a) => count(array_filter(array_keys($a), fn ($key) => !is_string($key) || empty($key))) > 0);
 }
+
+function isArrayWithOnlyNonEmptyKeysAndValues(array $array): bool
+{
+    return !with($array, fn ($a) => count(array_filter($a, fn ($key, $value) => empty($value) || empty($key), ARRAY_FILTER_USE_BOTH)) > 0);
+}
