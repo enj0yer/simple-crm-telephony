@@ -6,6 +6,9 @@ use Enj0yer\CrmTelephony\Exceptions\TelephonyHandlerInputDataValidationException
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Client\Response;
+use function Enj0yer\CrmTelephony\Helpers\isAllNonEmpty;
+use function Enj0yer\CrmTelephony\Helpers\isAllPozitive;
+use function Enj0yer\CrmTelephony\Helpers\isArrayWithOnlyNonEmptyKeysAndValues;
 use function Enj0yer\CrmTelephony\Helpers\normalizeUrl;
 
 class ProcessSchedule extends AbstractProcessor
@@ -15,15 +18,32 @@ class ProcessSchedule extends AbstractProcessor
      */
     public function create(string $name): Response
     {
-        if (with($name, fn ($value) => empty($value)))
+        if (!isAllNonEmpty($name))
         {
-            throw new TelephonyHandlerInputDataValidationException("TELEPHONY: Provided wrong arguments");
+            throw new TelephonyHandlerInputDataValidationException("Parameter `name` must be non empty");
+        }
+        
+        return Http::withBody(json_encode([
+            'name' => $name
+            ]))->post(normalizeUrl($this->prefix, '/'));
+            
+    }
+        
+    public function update(int $scheduleId, string $name): Response
+    {
+        if (!isAllPozitive($scheduleId))
+        {
+            throw new TelephonyHandlerInputDataValidationException("Parameter `scheduleId` must be greater than zero, provided $scheduleId");
+        }
+        if (!isAllNonEmpty($name))
+        {
+            throw new TelephonyHandlerInputDataValidationException("Parameter `name` must be non empty");
         }
 
-        return Http::withQueryParameters([
+        return Http::withBody(json_encode([
+            'schedule_id' => $scheduleId,
             'name' => $name
-        ])->post(normalizeUrl($this->prefix, '/'));
-
+        ]))->patch(normalizeUrl($this->prefix, '/'));
     }
 
     /**
@@ -31,14 +51,14 @@ class ProcessSchedule extends AbstractProcessor
      */
     public function delete(string $scheduleId): Response
     {
-        if (with($scheduleId, fn ($value) => empty($value)))
+        if (!isAllPozitive($scheduleId))
         {
-            throw new TelephonyHandlerInputDataValidationException("TELEPHONY: Provided wrong arguments");
+            throw new TelephonyHandlerInputDataValidationException("Parameter `scheduleId` must be greater than zero, provided $scheduleId");
         }
 
-        return Http::withQueryParameters([
-            'scheduleId' => $scheduleId
-        ])->delete(normalizeUrl($this->prefix));
+        return Http::withUrlParameters([
+            'schedule_id' => $scheduleId
+        ])->delete(normalizeUrl($this->prefix, "/{schedule_id}"));
     }
 
     /**
@@ -46,14 +66,14 @@ class ProcessSchedule extends AbstractProcessor
      */
     public function get(int $scheduleId): Response
     {
-        if (with($scheduleId, fn ($value) => empty($value)))
+        if (!isAllPozitive($scheduleId))
         {
-            throw new TelephonyHandlerInputDataValidationException("TELEPHONY: Provided wrong arguments");
+            throw new TelephonyHandlerInputDataValidationException("Parameter `scheduleId` must be greater than zero, provided $scheduleId");
         }
 
         return Http::withUrlParameters([
             'schedule_id' => $scheduleId
-        ])->post(normalizeUrl($this->prefix, "/{schedule_id}"));
+        ])->get(normalizeUrl($this->prefix, "/{schedule_id}"));
     }
 
     public function getAll(): Response
@@ -66,10 +86,14 @@ class ProcessSchedule extends AbstractProcessor
      */
     public function setParameters(int $scheduleId, array $params): Response
     {
-        if (with($scheduleId, fn ($value) => empty($value)) ||
-            with($params, fn ($args) => count(array_filter($args, fn ($key, $value) => empty($value) || empty($key)), ARRAY_FILTER_USE_BOTH) > 0))
+        if (!isAllPozitive($scheduleId))
         {
-            throw new TelephonyHandlerInputDataValidationException("TELEPHONY: Provided wrong arguments");
+            throw new TelephonyHandlerInputDataValidationException("Parameter `scheduleId` must be greater than zero, provided $scheduleId");
+        }
+        
+        if (!isArrayWithOnlyNonEmptyKeysAndValues($params))
+        {
+            throw new TelephonyHandlerInputDataValidationException("Parameter `params` must be an array, which contains only non empty keys and values");
         }
 
         return Http::withUrlParameters([
@@ -82,11 +106,11 @@ class ProcessSchedule extends AbstractProcessor
     /**
      * @throws TelephonyHandlerInputDataValidationException
      */
-    public function deleteParameters(int $scheduleParametersId): Response
+    public function deleteParameter(int $scheduleParametersId): Response
     {
-        if (with($scheduleParametersId, fn ($value) => empty($value)))
+        if (!isAllPozitive($scheduleParametersId))
         {
-            throw new TelephonyHandlerInputDataValidationException("TELEPHONY: Provided wrong arguments");
+            throw new TelephonyHandlerInputDataValidationException("Parameter `scheduleId` must be greater than zero, provided $scheduleParametersId");
         }
         return Http::withUrlParameters([
             'schedule_parameters_id' => $scheduleParametersId

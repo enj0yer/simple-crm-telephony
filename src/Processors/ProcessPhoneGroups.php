@@ -6,6 +6,8 @@ use Enj0yer\CrmTelephony\Exceptions\TelephonyHandlerInputDataValidationException
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
+use function Enj0yer\CrmTelephony\Helpers\isAllNonEmpty;
+use function Enj0yer\CrmTelephony\Helpers\isAllPozitive;
 use function Enj0yer\CrmTelephony\Helpers\normalizeUrl;
 
 class ProcessPhoneGroups extends AbstractProcessor
@@ -21,9 +23,9 @@ class ProcessPhoneGroups extends AbstractProcessor
      */
     public function create(string $name, string $description = ""): Response
     {
-        if (with($name, fn ($value) => empty($value)))
+        if (!isAllNonEmpty($name))
         {
-            throw new TelephonyHandlerInputDataValidationException("TELEPHONY: Provided wrong arguments");
+            throw new TelephonyHandlerInputDataValidationException("Parameter `name` must be non empty");
         }
 
         return Http::withBody(json_encode([
@@ -37,9 +39,9 @@ class ProcessPhoneGroups extends AbstractProcessor
      */
     public function delete(int $groupId): Response
     {
-        if (with($groupId, fn ($value) => empty($value)))
+        if (!isAllPozitive($groupId))
         {
-            throw new TelephonyHandlerInputDataValidationException("TELEPHONY: Provided wrong arguments");
+            throw new TelephonyHandlerInputDataValidationException("Parameter `groupId` must be greater than zero, provided $groupId");
         }
 
         return Http::withUrlParameters([
@@ -52,9 +54,9 @@ class ProcessPhoneGroups extends AbstractProcessor
      */
     public function get(int $groupId): Response
     {
-        if (with($groupId, fn ($value) => empty($value)))
+        if (!isAllPozitive($groupId))
         {
-            throw new TelephonyHandlerInputDataValidationException("TELEPHONY: Provided wrong arguments");
+            throw new TelephonyHandlerInputDataValidationException("Parameter `groupId` must be greater than zero, provided $groupId");
         }
         return Http::withUrlParameters([
             'phonegroup_id' => $groupId
@@ -63,9 +65,9 @@ class ProcessPhoneGroups extends AbstractProcessor
 
     public function update(int $groupId, string $newName = "", string $newDescription = ""): Response
     {
-        if (with($groupId, fn ($value) => empty($value)))
+        if (!isAllPozitive($groupId))
         {
-            throw new TelephonyHandlerInputDataValidationException("TELEPHONY: Provided wrong arguments");
+            throw new TelephonyHandlerInputDataValidationException("Parameter `groupId` must be greater than zero, provided $groupId");
         }
 
         return Http::withUrlParameters([
