@@ -22,7 +22,7 @@ class ProcessNodeOperation extends AbstractProcessor
     {
         if (with([$name, $botId, $soundName], fn($args) => count(array_filter($args, fn($value) => empty($value))) > 0))
         {
-            throw new TelephonyHandlerInputDataValidationException("TELEPHONY: Provided wrong arguments");
+            throw new TelephonyHandlerInputDataValidationException("Provided wrong arguments");
         }
 
         return Http::withBody(json_encode([
@@ -42,7 +42,7 @@ class ProcessNodeOperation extends AbstractProcessor
     {
         if (with([$botId, $inputDtmfNodeId], fn($args) => count(array_filter($args, fn($value) => empty($value))) > 0))
         {
-            throw new TelephonyHandlerInputDataValidationException("TELEPHONY: Provided wrong arguments");
+            throw new TelephonyHandlerInputDataValidationException("Provided wrong arguments");
         }
 
         return Http::withQueryParameters([

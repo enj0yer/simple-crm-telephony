@@ -18,7 +18,7 @@ class ProcessRecords extends AbstractProcessor
     {
         if (with($file, fn ($value) => is_null($value)))
         {
-            throw new TelephonyHandlerInputDataValidationException("TELEPHONY: Provided wrong arguments");
+            throw new TelephonyHandlerInputDataValidationException("Provided wrong arguments");
         }
 
         return Http::withBody($file, 'multipart/form-data')
@@ -32,7 +32,7 @@ class ProcessRecords extends AbstractProcessor
     {
         if (with($recordId, fn ($value) => empty($value)))
         {
-            throw new TelephonyHandlerInputDataValidationException("TELEPHONY: Provided wrong arguments");
+            throw new TelephonyHandlerInputDataValidationException("Provided wrong arguments");
         }
 
         return Http::withUrlParameters([

@@ -17,7 +17,7 @@ class ProcessBot extends AbstractProcessor
     {
         if (with($botId, fn($value) => empty($value)))
         {
-            throw new TelephonyHandlerInputDataValidationException("TELEPHONY: Provided wrong arguments");
+            throw new TelephonyHandlerInputDataValidationException("Provided wrong arguments");
         }
 
         return Http::withQueryParameters([
@@ -32,7 +32,7 @@ class ProcessBot extends AbstractProcessor
     {
         if (with($botId, fn($value) => empty($botId)))
         {
-            throw new TelephonyHandlerInputDataValidationException("TELEPHONY: Provided wrong arguments");
+            throw new TelephonyHandlerInputDataValidationException("Provided wrong arguments");
         }
 
         return Http::withQueryParameters([
@@ -49,7 +49,7 @@ class ProcessBot extends AbstractProcessor
     {
         if (with([$botId, $inputDtmfStep], fn($args) => count(array_filter($args, fn($value) => empty($value))) > 0))
         {
-            throw new TelephonyHandlerInputDataValidationException("TELEPHONY: Provided wrong arguments");
+            throw new TelephonyHandlerInputDataValidationException("Provided wrong arguments");
         }
 
         return Http::withQueryParameters([
@@ -70,7 +70,7 @@ class ProcessBot extends AbstractProcessor
     {
         if (with([$botId, $inputDtmfStep, $userAnswer, $dialTaskId, $callerId], fn($args) => count(array_filter($args, fn($value) => empty($value))) > 0))
         {
-            throw new TelephonyHandlerInputDataValidationException("TELEPHONY: Provided wrong arguments");
+            throw new TelephonyHandlerInputDataValidationException("Provided wrong arguments");
         }
 
         return Http::withQueryParameters([

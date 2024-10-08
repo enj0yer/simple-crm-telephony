@@ -20,7 +20,7 @@ class ProcessDialTask extends AbstractProcessor
     {
         if (with($dialTaskId, fn ($value) => empty($value)))
         {
-            throw new TelephonyHandlerInputDataValidationException("TELEPHONY: Provided wrong arguments");
+            throw new TelephonyHandlerInputDataValidationException("Provided wrong arguments");
         }
 
         return Http::withUrlParameters([
@@ -42,7 +42,7 @@ class ProcessDialTask extends AbstractProcessor
         if (with([$name, $scheduleId, $retryLogicId, $announcementId, $phoneGroupId, $destination, $destinationContext],
             fn ($params) => count(array_filter($params, fn ($value) => empty($value))) > 0))
         {
-            throw new TelephonyHandlerInputDataValidationException("TELEPHONY: Provided wrong arguments");
+            throw new TelephonyHandlerInputDataValidationException("Provided wrong arguments");
         }
 
         return Http::withBody(json_encode([
@@ -71,7 +71,7 @@ class ProcessDialTask extends AbstractProcessor
         if (with([$dialTaskId, $name, $scheduleId, $retryLogicId, $announcementId, $phoneGroupId, $destination, $destinationContext],
             fn ($params) => count(array_filter($params, fn ($value) => empty($value))) > 0))
         {
-            throw new TelephonyHandlerInputDataValidationException("TELEPHONY: Provided wrong arguments");
+            throw new TelephonyHandlerInputDataValidationException("Provided wrong arguments");
         }
 
         return Http::withUrlParameters([
@@ -95,7 +95,7 @@ class ProcessDialTask extends AbstractProcessor
     {
         if (with($dialTaskId, fn ($value) => empty($value)))
         {
-            throw new TelephonyHandlerInputDataValidationException("TELEPHONY: Provided wrong arguments");
+            throw new TelephonyHandlerInputDataValidationException("Provided wrong arguments");
         }
 
         return Http::withUrlParameters([
@@ -115,7 +115,7 @@ class ProcessDialTask extends AbstractProcessor
     {
         if (with($dialTaskId, fn ($value) => empty($value)))
         {
-            throw new TelephonyHandlerInputDataValidationException("TELEPHONY: Provided wrong arguments");
+            throw new TelephonyHandlerInputDataValidationException("Provided wrong arguments");
         }
 
         return Http::withQueryParameters([

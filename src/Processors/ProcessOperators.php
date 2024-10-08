@@ -11,9 +11,11 @@ use function Enj0yer\CrmTelephony\Helpers\normalizeUrl;
 
 class ProcessOperators extends AbstractProcessor
 {
-    public function getAll(): Response
+    public function getAll(): Response//Collection|false
     {
-        return Http::get(normalizeUrl($this->prefix, "/list"));
+        $response = Http::get(normalizeUrl($this->prefix, "/list"));
+        return $response;
+        // return $response->successful() ? $response->collect() : false;
     }
 
     /**
@@ -24,7 +26,7 @@ class ProcessOperators extends AbstractProcessor
 
         if (with([$extension, $password, $userContext], fn ($args) => count(array_filter($args, fn ($value) => empty($value))) > 0))
         {
-            throw new TelephonyHandlerInputDataValidationException("TELEPHONY: Provided wrong arguments");
+            throw new TelephonyHandlerInputDataValidationException("Provided wrong arguments");
         }
         return Http::withBody(json_encode([
             'extension' => $extension,
@@ -40,7 +42,7 @@ class ProcessOperators extends AbstractProcessor
     {
         if (with($extension, fn ($value) => empty($value)))
         {
-            throw new TelephonyHandlerInputDataValidationException("TELEPHONY: Provided wrong arguments");
+            throw new TelephonyHandlerInputDataValidationException("Provided wrong arguments");
         }
 
         return Http::withUrlParameters([
@@ -52,7 +54,7 @@ class ProcessOperators extends AbstractProcessor
     {
         if (with([$extension, $password, $userContext], fn ($args) => count(array_filter($args, fn ($value) => empty($value))) > 0))
         {
-            throw new TelephonyHandlerInputDataValidationException("TELEPHONY: Provided wrong arguments");
+            throw new TelephonyHandlerInputDataValidationException("Provided wrong arguments");
         }
         return Http::withBody(json_encode([
             'extension' => $extension,
@@ -70,7 +72,7 @@ class ProcessOperators extends AbstractProcessor
         {
             throw new TelephonyHandlerInputDataValidationException("TeLEPHONY: Provided wrong arguments");
         }
-
+        
         return Http::withUrlParameters([
             "extension" => $extension
         ])->get(normalizeUrl($this->prefix, "/{extension}"));

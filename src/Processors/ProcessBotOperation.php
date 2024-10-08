@@ -18,7 +18,7 @@ class ProcessBotOperation extends AbstractProcessor
     {
         if (with($name, fn($value) => empty($value)))
         {
-            throw new TelephonyHandlerInputDataValidationException("TELEPHONY: Provided wrong arguments");
+            throw new TelephonyHandlerInputDataValidationException("Provided wrong arguments");
         }
 
         return Http::withBody(json_encode([
@@ -39,7 +39,7 @@ class ProcessBotOperation extends AbstractProcessor
     {
         if (with($botId, fn($value) => empty($value)))
         {
-            throw new TelephonyHandlerInputDataValidationException("TELEPHONY: Provided wrong arguments");
+            throw new TelephonyHandlerInputDataValidationException("Provided wrong arguments");
         }
 
         return Http::withUrlParameters([
@@ -56,7 +56,7 @@ class ProcessBotOperation extends AbstractProcessor
     {
         if (with($botId, fn($value) => empty($value)))
         {
-            throw new TelephonyHandlerInputDataValidationException("TELEPHONY: Provided wrong arguments");
+            throw new TelephonyHandlerInputDataValidationException("Provided wrong arguments");
         }
 
         return Http::withQueryParameters([
@@ -72,7 +72,7 @@ class ProcessBotOperation extends AbstractProcessor
     {
         if (with($botId, fn($value) => empty($value)))
         {
-            throw new TelephonyHandlerInputDataValidationException("TELEPHONY: Provided wrong arguments");
+            throw new TelephonyHandlerInputDataValidationException("Provided wrong arguments");
         }
 
         return Http::withUrlParameters([

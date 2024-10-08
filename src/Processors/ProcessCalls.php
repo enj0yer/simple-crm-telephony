@@ -16,7 +16,7 @@ class ProcessCalls extends AbstractProcessor
     {
         if (with([$source, $destination], fn ($args) => count(array_filter($args, fn ($value) => empty($value))) > 0))
         {
-            throw new TelephonyHandlerInputDataValidationException("TELEPHONY: Provided wrong arguments");
+            throw new TelephonyHandlerInputDataValidationException("Provided wrong arguments");
         }
 
         return Http::withBody(json_encode([
