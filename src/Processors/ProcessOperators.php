@@ -11,7 +11,7 @@ use function Enj0yer\CrmTelephony\Helpers\normalizeUrl;
 
 class ProcessOperators extends AbstractProcessor
 {
-    public function getAll(): Response//Collection|false
+    public function getAll(): Response
     {
         $response = Http::get(normalizeUrl($this->prefix, "/list"));
         return $response;

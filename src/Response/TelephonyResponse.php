@@ -5,22 +5,27 @@ use Illuminate\Support\Collection;
 
 class TelephonyResponse 
 {
-    private bool $success;
+    private bool $statusCode;
     
     private array $data = [];
 
     private bool $multipleResponse;
 
-    public function __construct(bool $success, array $data, bool $multiple = false)
+    public function __construct(int $responseStatusCode, ?array $data, bool $multiple = false)
     {
-        $this->success = $success;
+        $this->statusCode = $responseStatusCode;
         $this->data = $data;
         $this->multipleResponse = $multiple;
     }
 
+    public function statusCode(): int
+    {
+        return $this->statusCode;
+    }
+
     public function successful(): bool
     {
-        return $this->success;
+        return $this->statusCode() >= 200 && $this->statusCode() < 300;
     }
 
     public function multiple(): bool
@@ -33,9 +38,9 @@ class TelephonyResponse
         return new Collection($this->data);
     }
 
-    public function asObject(): \stdClass
+    public function asObject()
     {
-        return (object) $this->data;
+        return json_decode(json_encode($this->data));
     }
 
     public function asArray(): array
