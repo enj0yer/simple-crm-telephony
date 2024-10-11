@@ -21,6 +21,11 @@ class BotInputDtmfStepSchema
         "action_for_t" => null
     ];
 
+    public static function new()
+    {
+        return new static();
+    } 
+
     public function getActions(): array
     {
         return $this->actions;
