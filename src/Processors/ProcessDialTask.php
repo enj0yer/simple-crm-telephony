@@ -4,6 +4,8 @@ namespace Enj0yer\CrmTelephony\Processors;
 
 use Enj0yer\CrmTelephony\Exceptions\TelephonyHandlerInputDataValidationException;
 use Enj0yer\CrmTelephony\Processors\AbstractProcessor;
+use Enj0yer\CrmTelephony\Response\TelephonyResponse;
+use Enj0yer\CrmTelephony\Response\TelephonyResponseFactory;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
@@ -11,33 +13,35 @@ use function Enj0yer\CrmTelephony\Helpers\normalizeUrl;
 
 class ProcessDialTask extends AbstractProcessor
 {
-    public function getAll(): Response
+    public function getAll(): TelephonyResponse
     {
-        return Http::get(normalizeUrl($this->prefix, "/list"));
+        $response = Http::get(normalizeUrl($this->prefix, "/list"));
+        return TelephonyResponseFactory::createMultiple($response);
     }
 
-    public function get(int $dialTaskId): Response
+    public function get(int $dialTaskId): TelephonyResponse
     {
         if (with($dialTaskId, fn ($value) => empty($value)))
         {
             throw new TelephonyHandlerInputDataValidationException("Provided wrong arguments");
         }
 
-        return Http::withUrlParameters([
+        $response = Http::withUrlParameters([
             "dialtask_id" => $dialTaskId
         ])->get(normalizeUrl($this->prefix, "/{dialtask_id}"));
+        return TelephonyResponseFactory::createDefault($response);
     }
 
     /**
      * @throws TelephonyHandlerInputDataValidationException
      */
-    public function create(string $name,
+    public function create(string $name,                // TODO: Optimize amount of parameters
                            int    $scheduleId,
                            int    $retryLogicId,
                            int    $announcementId,
                            int    $phoneGroupId,
                            string $destination,
-                           string $destinationContext): Response
+                           string $destinationContext): TelephonyResponse
     {
         if (with([$name, $scheduleId, $retryLogicId, $announcementId, $phoneGroupId, $destination, $destinationContext],
             fn ($params) => count(array_filter($params, fn ($value) => empty($value))) > 0))
@@ -45,7 +49,7 @@ class ProcessDialTask extends AbstractProcessor
             throw new TelephonyHandlerInputDataValidationException("Provided wrong arguments");
         }
 
-        return Http::withBody(json_encode([
+        $response = Http::withBody(json_encode([
             "name" => $name,
             "schedule_id" => $scheduleId,
             "retry_logic_id" => $retryLogicId,
@@ -54,19 +58,20 @@ class ProcessDialTask extends AbstractProcessor
             "destination" => $destination,
             "destination_context" => $destinationContext,
         ]))->post(normalizeUrl($this->prefix, "/"));
+        return TelephonyResponseFactory::createDefault($response);
     }
 
     /**
      * @throws TelephonyHandlerInputDataValidationException
      */
-    public function update(int    $dialTaskId,
+    public function update(int    $dialTaskId,           // TODO: Optimize amount of parameters
                            string $name,
                            int    $scheduleId,
                            int    $retryLogicId,
                            int    $announcementId,
                            int    $phoneGroupId,
                            string $destination,
-                           string $destinationContext): Response
+                           string $destinationContext): TelephonyResponse
     {
         if (with([$dialTaskId, $name, $scheduleId, $retryLogicId, $announcementId, $phoneGroupId, $destination, $destinationContext],
             fn ($params) => count(array_filter($params, fn ($value) => empty($value))) > 0))
@@ -74,7 +79,7 @@ class ProcessDialTask extends AbstractProcessor
             throw new TelephonyHandlerInputDataValidationException("Provided wrong arguments");
         }
 
-        return Http::withUrlParameters([
+        $response = Http::withUrlParameters([
             "dialtask_id" => $dialTaskId
         ])
         ->withBody(json_encode([
@@ -86,40 +91,44 @@ class ProcessDialTask extends AbstractProcessor
             "destination" => $destination,
             "destination_context" => $destinationContext,
         ]))->patch(normalizeUrl($this->prefix, "/{dialtask_id}"));
+        return TelephonyResponseFactory::createDefault($response);
     }
 
     /**
      * @throws TelephonyHandlerInputDataValidationException
      */
-    public function delete(int $dialTaskId): Response
+    public function delete(int $dialTaskId): TelephonyResponse
     {
         if (with($dialTaskId, fn ($value) => empty($value)))
         {
             throw new TelephonyHandlerInputDataValidationException("Provided wrong arguments");
         }
 
-        return Http::withUrlParameters([
+        $response = Http::withUrlParameters([
             "dialtask_id" => $dialTaskId
         ])->delete(normalizeUrl($this->prefix, "/{dialtask_id}"));
+        return TelephonyResponseFactory::createDefault($response);
     }
 
-    public function generate(): Response
+    public function generate(): TelephonyResponse
     {
-        return Http::post(normalizeUrl($this->prefix, "/generate"));
+        $response = Http::post(normalizeUrl($this->prefix, "/generate"));
+        return TelephonyResponseFactory::createDefault($response);
     }
 
     /**
      * @throws TelephonyHandlerInputDataValidationException
      */
-    public function reset(int $dialTaskId): Response
+    public function reset(int $dialTaskId): TelephonyResponse
     {
         if (with($dialTaskId, fn ($value) => empty($value)))
         {
             throw new TelephonyHandlerInputDataValidationException("Provided wrong arguments");
         }
 
-        return Http::withQueryParameters([
+        $response = Http::withQueryParameters([
             "dialtask_id" => $dialTaskId
         ])->post(normalizeUrl($this->prefix, "/reset"));
+        return TelephonyResponseFactory::createDefault($response);
     }
 }
