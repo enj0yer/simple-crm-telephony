@@ -14,7 +14,7 @@ class TelephonyResponse
     public function __construct(int $responseStatusCode, ?array $data, bool $multiple = false)
     {
         $this->statusCode = $responseStatusCode;
-        $this->data = $data;
+        $this->data = $data ?? [];
         $this->multipleResponse = $multiple;
     }
 
