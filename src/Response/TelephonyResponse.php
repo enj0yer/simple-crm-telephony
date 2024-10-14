@@ -5,7 +5,7 @@ use Illuminate\Support\Collection;
 
 class TelephonyResponse 
 {
-    private bool $statusCode;
+    private int $statusCode;
     
     private array $data = [];
 
