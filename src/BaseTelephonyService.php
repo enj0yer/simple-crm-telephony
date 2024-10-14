@@ -5,7 +5,7 @@ use Enj0yer\CrmTelephony\Calls\CallableEntity;
 use Enj0yer\CrmTelephony\Calls\CallerEntity;
 use Illuminate\Support\Collection;
 
-class TelephonyService
+class BaseTelephonyService
 {
     public static function apiService(): TelephonyRawApiService
     {
