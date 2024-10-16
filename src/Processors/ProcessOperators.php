@@ -3,19 +3,16 @@
 namespace Enj0yer\CrmTelephony\Processors;
 
 use Enj0yer\CrmTelephony\Exceptions\TelephonyHandlerInputDataValidationException;
+use Enj0yer\CrmTelephony\Helpers\UrlBuilder;
 use Enj0yer\CrmTelephony\Response\TelephonyResponse;
 use Enj0yer\CrmTelephony\Response\TelephonyResponseFactory;
-use Illuminate\Http\Client\Request;
-use Illuminate\Http\Client\Response;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
-use function Enj0yer\CrmTelephony\Helpers\normalizeUrl;
 
 class ProcessOperators extends AbstractProcessor
 {
     public function getAll(): TelephonyResponse
     {
-        $response = Http::get(normalizeUrl($this->prefix, "/list"));
+        $response = Http::get(UrlBuilder::new($this->prefix, "/list"));
         return TelephonyResponseFactory::createMultiple($response);
     }
 
@@ -33,7 +30,7 @@ class ProcessOperators extends AbstractProcessor
             'extension' => $extension,
             'password' => $password,
             'user_context' => $userContext
-        ]))->post(normalizeUrl($this->prefix, '/'));
+        ]))->post(UrlBuilder::new($this->prefix, '/'));
         return TelephonyResponseFactory::createDefault($response);
     }
 
@@ -47,9 +44,9 @@ class ProcessOperators extends AbstractProcessor
             throw new TelephonyHandlerInputDataValidationException("Provided wrong arguments");
         }
 
-        $response = Http::withUrlParameters([
-            'extension' => $extension
-        ])->delete(normalizeUrl($this->prefix, "/{extension}"));
+        $url = UrlBuilder::new($this->prefix, "/{extension}")
+                         ->withUrlParameters(['extension' => $extension]);
+        $response = Http::delete($url);
         return TelephonyResponseFactory::createDefault($response);
     }
 
@@ -63,7 +60,7 @@ class ProcessOperators extends AbstractProcessor
             'extension' => $extension,
             'password' => $password,
             'user_context' => $userContext
-        ]))->put(normalizeUrl($this->prefix, '/'));
+        ]))->put(UrlBuilder::new($this->prefix, '/'));
         return TelephonyResponseFactory::createDefault($response);
     }
 
@@ -74,12 +71,12 @@ class ProcessOperators extends AbstractProcessor
     {
         if (with($extension, fn ($value) => empty($value)))
         {
-            throw new TelephonyHandlerInputDataValidationException("TeLEPHONY: Provided wrong arguments");
+            throw new TelephonyHandlerInputDataValidationException("Provided wrong arguments");
         }
         
-        $response = Http::withUrlParameters([
-            "extension" => $extension
-        ])->get(normalizeUrl($this->prefix, "/{extension}"));
+        $url = UrlBuilder::new($this->prefix, "/{extension}")
+                         ->withUrlParameters(["extension" => $extension]);
+        $response = Http::get($url);
         return TelephonyResponseFactory::createDefault($response);
     }
 }

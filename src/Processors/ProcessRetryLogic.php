@@ -3,15 +3,13 @@
 namespace Enj0yer\CrmTelephony\Processors;
 
 use Enj0yer\CrmTelephony\Exceptions\TelephonyHandlerInputDataValidationException;
+use Enj0yer\CrmTelephony\Helpers\UrlBuilder;
 use Enj0yer\CrmTelephony\Response\TelephonyResponse;
 use Enj0yer\CrmTelephony\Response\TelephonyResponseFactory;
-use Illuminate\Http\Client\Response;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 use function Enj0yer\CrmTelephony\Helpers\isAllNonEmpty;
 use function Enj0yer\CrmTelephony\Helpers\isAllPozitive;
 use function Enj0yer\CrmTelephony\Helpers\isAssocArrayWithStringNonEmptyKeys;
-use function Enj0yer\CrmTelephony\Helpers\normalizeUrl;
 
 class ProcessRetryLogic extends AbstractProcessor
 {
@@ -28,7 +26,7 @@ class ProcessRetryLogic extends AbstractProcessor
         $response = Http::withBody(json_encode([
             'name' => $name,
             'description' => $description,
-        ]))->post(normalizeUrl($this->prefix, "/logic"));
+        ]))->post(UrlBuilder::new($this->prefix, "/logic"));
         return TelephonyResponseFactory::createDefault($response);
     }
 
@@ -42,12 +40,12 @@ class ProcessRetryLogic extends AbstractProcessor
             throw new TelephonyHandlerInputDataValidationException("Parameter `logicId` must be greater than zero, provided $logicId");
         }
 
-        $response = Http::withUrlParameters([
-            'retrylogic_id' => $logicId
-        ])->withBody(json_encode([
+        $url = UrlBuilder::new($this->prefix, "/logic", "/{retrylogic_id}")
+                         ->withUrlParameters(['retrylogic_id' => $logicId]);
+        $response = Http::withBody(json_encode([
             'name' => $name,
             'description' => $description,
-        ]))->patch(normalizeUrl($this->prefix, "/logic", "/{retrylogic_id}"));
+        ]))->patch($url);
         return TelephonyResponseFactory::createDefault($response);
     }
 
@@ -57,9 +55,10 @@ class ProcessRetryLogic extends AbstractProcessor
         {
             throw new TelephonyHandlerInputDataValidationException("Parameter `logicId` must be greater than zero, provided $logicId");
         }
-        $response = Http::withUrlParameters([
-            'retrylogic_id' => $logicId
-        ])->delete(normalizeUrl($this->prefix, "/logic", "/{retrylogic_id}"));
+
+        $url = UrlBuilder::new($this->prefix, "/logic", "/{retrylogic_id}")
+                         ->withUrlParameters(['retrylogic_id' => $logicId]);
+        $response = Http::delete($url);
         return TelephonyResponseFactory::createDefault($response);
     }
 
@@ -72,18 +71,19 @@ class ProcessRetryLogic extends AbstractProcessor
         {
             throw new TelephonyHandlerInputDataValidationException("Parameter `logicId` must be greater than zero, provided $logicId");
         }
-        $response = Http::withUrlParameters([
-            'retrylogic_id' => $logicId
-        ])->get(normalizeUrl($this->prefix, "/logic", "/{retrylogic_id}"));
+
+        $url = UrlBuilder::new($this->prefix, "/logic", "/{retrylogic_id}")
+                         ->withUrlParameters(['retrylogic_id' => $logicId]);
+        $response = Http::get($url);
         return TelephonyResponseFactory::createDefault($response);
     }
 
     public function getAll(): TelephonyResponse
     {
-        $response = Http::get(normalizeUrl($this->prefix, "/logic", "/list"));
+        $response = Http::get(UrlBuilder::new($this->prefix, "/logic", "/list"));
         return TelephonyResponseFactory::createMultiple($response);
     }
-
+ 
     /**
      * @throws TelephonyHandlerInputDataValidationException
      */
@@ -94,9 +94,9 @@ class ProcessRetryLogic extends AbstractProcessor
             throw new TelephonyHandlerInputDataValidationException("Parameter `logicId` must be greater than zero, provided $logicId");
         }
 
-        $response = Http::withUrlParameters([
-            'retry_logic_id' => $logicId
-        ])->get(normalizeUrl($this->prefix, "/parameters", "/list", "/{retry_logic_id}"));
+        $url = UrlBuilder::new($this->prefix, "/parameters", "/list", "/{retry_logic_id}")
+                         ->withUrlParameters(['retry_logic_id' => $logicId]);
+        $response = Http::get($url);
         return TelephonyResponseFactory::createMultiple($response);
     }
 
@@ -114,16 +114,17 @@ class ProcessRetryLogic extends AbstractProcessor
         {
             throw new TelephonyHandlerInputDataValidationException("Parameter `parameters` must be an assosiative array with non-empty keys strings");
         }
-        $response = Http::withUrlParameters([
-            "retry_logic_id" => $logicId
-        ])->withBody(json_encode(
+
+        $url = UrlBuilder::new($this->prefix, "/parameters", "/{retry_logic_id}")
+                         ->withUrlParameters(["retry_logic_id" => $logicId]);
+        $response = Http::withBody(json_encode(
             with($parameters, fn ($params) => array_map(fn ($key) => [
                 "retry_logic_id" => $logicId,
                 "param_key" => $key,
                 "param_value" => $params[$key]
             ], array_keys($params)))
         ))
-          ->post(normalizeUrl($this->prefix, "/parameters", "/{retry_logic_id}"));
+          ->post($url);
           return TelephonyResponseFactory::createDefault($response);
     }
 
@@ -142,13 +143,13 @@ class ProcessRetryLogic extends AbstractProcessor
             throw new TelephonyHandlerInputDataValidationException("Parameter `key` must be non empty");
         }
 
-        $response = Http::withUrlParameters([
-            "param_id" => $paramId
-        ])->withBody(json_encode([
+        $url = UrlBuilder::new($this->prefix, "/parameters", "/{param_id}")
+                         ->withUrlParameters(["param_id" => $paramId]);
+        $response = Http::withBody(json_encode([
             "retry_logic_id" => $logicId,
             "param_key" => $key,
             "param_value" => $value
-        ]))->patch(normalizeUrl($this->prefix, "/parameters", "/{param_id}"));
+        ]))->patch($url);
         return TelephonyResponseFactory::createDefault($response);
     }
 
@@ -162,9 +163,9 @@ class ProcessRetryLogic extends AbstractProcessor
             throw new TelephonyHandlerInputDataValidationException("Parameter `paramId` must be greater than zero, provided $paramId");
         }
 
-        $response = Http::withUrlParameters([
-            "param_id" => $paramId
-        ])->delete(normalizeUrl($this->prefix, "/parameters", "/{param_id}"));
+        $url = UrlBuilder::new($this->prefix, "/parameters", "/{param_id}")
+                         ->withUrlParameters(["param_id" => $paramId]);
+        $response = Http::delete($url);
         return TelephonyResponseFactory::createDefault($response);
     }
 

@@ -3,15 +3,13 @@
 namespace Enj0yer\CrmTelephony\Processors;
 
 use Enj0yer\CrmTelephony\Exceptions\TelephonyHandlerInputDataValidationException;
+use Enj0yer\CrmTelephony\Helpers\UrlBuilder;
 use Enj0yer\CrmTelephony\Response\TelephonyResponse;
 use Enj0yer\CrmTelephony\Response\TelephonyResponseFactory;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Http\Client\Response;
 use function Enj0yer\CrmTelephony\Helpers\isAllNonEmpty;
 use function Enj0yer\CrmTelephony\Helpers\isAllPozitive;
 use function Enj0yer\CrmTelephony\Helpers\isArrayWithOnlyNonEmptyKeysAndValues;
-use function Enj0yer\CrmTelephony\Helpers\normalizeUrl;
 
 class ProcessSchedule extends AbstractProcessor
 {
@@ -27,7 +25,7 @@ class ProcessSchedule extends AbstractProcessor
         
         $response = Http::withBody(json_encode([
             'name' => $name
-            ]))->post(normalizeUrl($this->prefix, '/'));
+            ]))->post(UrlBuilder::new($this->prefix, '/'));
         return TelephonyResponseFactory::createDefault($response);
     }
         
@@ -45,7 +43,7 @@ class ProcessSchedule extends AbstractProcessor
         $response = Http::withBody(json_encode([
             'schedule_id' => $scheduleId,
             'name' => $name
-        ]))->patch(normalizeUrl($this->prefix, '/'));
+        ]))->patch(UrlBuilder::new($this->prefix, '/'));
         return TelephonyResponseFactory::createDefault($response);
     }
 
@@ -59,9 +57,9 @@ class ProcessSchedule extends AbstractProcessor
             throw new TelephonyHandlerInputDataValidationException("Parameter `scheduleId` must be greater than zero, provided $scheduleId");
         }
 
-        $response = Http::withUrlParameters([
-            'schedule_id' => $scheduleId
-        ])->delete(normalizeUrl($this->prefix, "/{schedule_id}"));
+        $url = UrlBuilder::new($this->prefix, "/{schedule_id}")
+                         ->withUrlParameters(['schedule_id' => $scheduleId]);
+        $response = Http::delete($url);
         return TelephonyResponseFactory::createDefault($response);
     }
 
@@ -74,15 +72,16 @@ class ProcessSchedule extends AbstractProcessor
         {
             throw new TelephonyHandlerInputDataValidationException("Parameter `scheduleId` must be greater than zero, provided $scheduleId");
         }
-        $response = Http::withUrlParameters([
-            'schedule_id' => $scheduleId
-        ])->get(normalizeUrl($this->prefix, "/{schedule_id}"));
+
+        $url = UrlBuilder::new($this->prefix, "/{schedule_id}")
+                         ->withUrlParameters(['schedule_id' => $scheduleId]);
+        $response = Http::get($url);
         return TelephonyResponseFactory::createDefault($response);
     }
 
     public function getAll(): TelephonyResponse
     {
-        $response = Http::get(normalizeUrl($this->prefix, "/list"));
+        $response = Http::get(UrlBuilder::new($this->prefix, "/list"));
         return TelephonyResponseFactory::createMultiple($response);
     }
 
@@ -101,11 +100,11 @@ class ProcessSchedule extends AbstractProcessor
             throw new TelephonyHandlerInputDataValidationException("Parameter `params` must be an array, which contains only non empty keys and values");
         }
 
-        $response = Http::withUrlParameters([
-            'schedule_id' => $scheduleId
-        ])->withBody(json_encode(
+        $url = UrlBuilder::new($this->prefix, "/parameters", "/{schedule_id}")
+                         ->withUrlParameters(['schedule_id' => $scheduleId]);
+        $response = Http::withBody(json_encode(
             array_map(fn ($key) => ['key' => $key, 'value' => $params[$key]], array_keys($params))
-        ))->post(normalizeUrl($this->prefix, "/parameters", "/{schedule_id}"));
+        ))->post($url);
         return TelephonyResponseFactory::createDefault($response);
     }
 
@@ -118,9 +117,10 @@ class ProcessSchedule extends AbstractProcessor
         {
             throw new TelephonyHandlerInputDataValidationException("Parameter `scheduleId` must be greater than zero, provided $scheduleParametersId");
         }
-        $response = Http::withUrlParameters([
-            'schedule_parameters_id' => $scheduleParametersId
-        ])->delete(normalizeUrl($this->prefix, "/parameters", "/{schedule_parameters_id}"));
+
+        $url = UrlBuilder::new($this->prefix, "/parameters", "/{schedule_parameters_id}")
+                         ->withUrlParameters(['schedule_parameters_id' => $scheduleParametersId]);
+        $response = Http::delete($url);
         return TelephonyResponseFactory::createDefault($response);
     }
 }

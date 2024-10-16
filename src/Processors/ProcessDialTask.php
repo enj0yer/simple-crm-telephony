@@ -3,19 +3,17 @@
 namespace Enj0yer\CrmTelephony\Processors;
 
 use Enj0yer\CrmTelephony\Exceptions\TelephonyHandlerInputDataValidationException;
+use Enj0yer\CrmTelephony\Helpers\UrlBuilder;
 use Enj0yer\CrmTelephony\Processors\AbstractProcessor;
 use Enj0yer\CrmTelephony\Response\TelephonyResponse;
 use Enj0yer\CrmTelephony\Response\TelephonyResponseFactory;
-use Illuminate\Http\Client\Response;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
-use function Enj0yer\CrmTelephony\Helpers\normalizeUrl;
 
 class ProcessDialTask extends AbstractProcessor
 {
     public function getAll(): TelephonyResponse
     {
-        $response = Http::get(normalizeUrl($this->prefix, "/list"));
+        $response = Http::get(UrlBuilder::new($this->prefix, "/list"));
         return TelephonyResponseFactory::createMultiple($response);
     }
 
@@ -25,10 +23,10 @@ class ProcessDialTask extends AbstractProcessor
         {
             throw new TelephonyHandlerInputDataValidationException("Provided wrong arguments");
         }
-
-        $response = Http::withUrlParameters([
-            "dialtask_id" => $dialTaskId
-        ])->get(normalizeUrl($this->prefix, "/{dialtask_id}"));
+        
+        $url = UrlBuilder::new($this->prefix, "/{dialtask_id}")
+                         ->withUrlParameters(["dialtask_id" => $dialTaskId]);
+        $response = Http::get($url);
         return TelephonyResponseFactory::createDefault($response);
     }
 
@@ -57,7 +55,7 @@ class ProcessDialTask extends AbstractProcessor
             "phone_group_id" => $phoneGroupId,
             "destination" => $destination,
             "destination_context" => $destinationContext,
-        ]))->post(normalizeUrl($this->prefix, "/"));
+        ]))->post(UrlBuilder::new($this->prefix, "/"));
         return TelephonyResponseFactory::createDefault($response);
     }
 
@@ -79,10 +77,9 @@ class ProcessDialTask extends AbstractProcessor
             throw new TelephonyHandlerInputDataValidationException("Provided wrong arguments");
         }
 
-        $response = Http::withUrlParameters([
-            "dialtask_id" => $dialTaskId
-        ])
-        ->withBody(json_encode([
+        $url = UrlBuilder::new($this->prefix, "/{dialtask_id}")
+                         ->withUrlParameters(["dialtask_id" => $dialTaskId]);
+        $response = Http::withBody(json_encode([
             "name" => $name,
             "schedule_id" => $scheduleId,
             "retry_logic_id" => $retryLogicId,
@@ -90,7 +87,7 @@ class ProcessDialTask extends AbstractProcessor
             "phone_group_id" => $phoneGroupId,
             "destination" => $destination,
             "destination_context" => $destinationContext,
-        ]))->patch(normalizeUrl($this->prefix, "/{dialtask_id}"));
+        ]))->patch($url);
         return TelephonyResponseFactory::createDefault($response);
     }
 
@@ -104,15 +101,15 @@ class ProcessDialTask extends AbstractProcessor
             throw new TelephonyHandlerInputDataValidationException("Provided wrong arguments");
         }
 
-        $response = Http::withUrlParameters([
-            "dialtask_id" => $dialTaskId
-        ])->delete(normalizeUrl($this->prefix, "/{dialtask_id}"));
+        $url = UrlBuilder::new($this->prefix, "/{dialtask_id}")
+                         ->withUrlParameters(["dialtask_id" => $dialTaskId]);
+        $response = Http::delete($url);
         return TelephonyResponseFactory::createDefault($response);
     }
 
     public function generate(): TelephonyResponse
     {
-        $response = Http::post(normalizeUrl($this->prefix, "/generate"));
+        $response = Http::post(UrlBuilder::new($this->prefix, "/generate"));
         return TelephonyResponseFactory::createDefault($response);
     }
 
@@ -126,9 +123,9 @@ class ProcessDialTask extends AbstractProcessor
             throw new TelephonyHandlerInputDataValidationException("Provided wrong arguments");
         }
 
-        $response = Http::withQueryParameters([
-            "dialtask_id" => $dialTaskId
-        ])->post(normalizeUrl($this->prefix, "/reset"));
+        $url = UrlBuilder::new($this->prefix, "/reset")
+                         ->withQueryParameters(["dialtask_id" => $dialTaskId]);
+        $response = Http::post($url);
         return TelephonyResponseFactory::createDefault($response);
     }
 }

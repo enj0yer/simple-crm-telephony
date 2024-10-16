@@ -3,12 +3,11 @@
 namespace Enj0yer\CrmTelephony\Processors;
 
 use Enj0yer\CrmTelephony\Exceptions\TelephonyHandlerInputDataValidationException;
+use Enj0yer\CrmTelephony\Helpers\UrlBuilder;
 use Enj0yer\CrmTelephony\Processors\AbstractProcessor;
 use Enj0yer\CrmTelephony\Response\TelephonyResponse;
 use Enj0yer\CrmTelephony\Response\TelephonyResponseFactory;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Http\Client\Response;
-use function Enj0yer\CrmTelephony\Helpers\normalizeUrl;
 
 class ProcessBot extends AbstractProcessor
 {
@@ -22,9 +21,9 @@ class ProcessBot extends AbstractProcessor
             throw new TelephonyHandlerInputDataValidationException("Provided wrong arguments");
         }
 
-        $response = Http::withQueryParameters([
-            "botid" => $botId
-        ])->get(normalizeUrl($this->prefix, "/startinputid"));
+        $url = UrlBuilder::new($this->prefix, "/startinputid")
+                         ->withQueryParameters(["botid" => $botId]);
+        $response = Http::get($url);
         return TelephonyResponseFactory::createDefault($response);   
     }
     /**
@@ -37,10 +36,10 @@ class ProcessBot extends AbstractProcessor
             throw new TelephonyHandlerInputDataValidationException("Provided wrong arguments");
         }
 
-        $response = Http::withQueryParameters([
-            "bot_id" => $botId,
-            "input_dtmf_step" => $inputDtmfStep
-        ])->get(normalizeUrl($this->prefix, "/sound"));
+        $url = UrlBuilder::new($this->prefix, "/sound")
+                         ->withQueryParameters(["bot_id" => $botId,
+                                                "input_dtmf_step" => $inputDtmfStep]);
+        $response = Http::get($url);
         return TelephonyResponseFactory::createDefault($response);
     }
 
@@ -54,10 +53,10 @@ class ProcessBot extends AbstractProcessor
             throw new TelephonyHandlerInputDataValidationException("Provided wrong arguments");
         }
 
-        $response = Http::withQueryParameters([
-            "bot_id" => $botId,
-            "input_dtmf_step" => $inputDtmfStep
-        ])->get(normalizeUrl($this->prefix, "/sound"));
+        $url = UrlBuilder::new($this->prefix, "/sound")
+                         ->withQueryParameters(["bot_id" => $botId,
+                                                "input_dtmf_step" => $inputDtmfStep]);
+        $response = Http::get($url);
         return TelephonyResponseFactory::createDefault($response);
     }
 
@@ -75,13 +74,13 @@ class ProcessBot extends AbstractProcessor
             throw new TelephonyHandlerInputDataValidationException("Provided wrong arguments");
         }
 
-        $response = Http::withQueryParameters([
-            "bot_id" => $botId,
-            "input_dtmf_step" => $inputDtmfStep,
-            "user_answer" => $userAnswer,
-            "dial_task_id" => $dialTaskId,
-            "caller_id" => $callerId
-        ])->get(normalizeUrl($this->prefix, "/answer"));
+        $url = UrlBuilder::new($this->prefix, "/answer")
+                         ->withQueryParameters(["bot_id" => $botId,
+                                                "input_dtmf_step" => $inputDtmfStep,
+                                                "user_answer" => $userAnswer,
+                                                "dial_task_id" => $dialTaskId,
+                                                "caller_id" => $callerId]);
+        $response = Http::get($url);
         return TelephonyResponseFactory::createDefault($response);
     }
 

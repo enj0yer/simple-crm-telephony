@@ -3,20 +3,19 @@
 namespace Enj0yer\CrmTelephony\Processors;
 
 use Enj0yer\CrmTelephony\Exceptions\TelephonyHandlerInputDataValidationException;
+use Enj0yer\CrmTelephony\Helpers\UrlBuilder;
 use Enj0yer\CrmTelephony\Response\TelephonyResponse;
 use Enj0yer\CrmTelephony\Response\TelephonyResponseFactory;
-use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 use function Enj0yer\CrmTelephony\Helpers\isAllNonEmpty;
 use function Enj0yer\CrmTelephony\Helpers\isAllPozitive;
-use function Enj0yer\CrmTelephony\Helpers\normalizeUrl;
 
 class ProcessPhoneGroups extends AbstractProcessor
 {
 
     public function getAll(): TelephonyResponse
     {
-        $response =Http::get(normalizeUrl($this->prefix, "/list"));
+        $response = Http::get(UrlBuilder::new($this->prefix, "/list"));
         return TelephonyResponseFactory::createMultiple($response);
     }
 
@@ -33,7 +32,7 @@ class ProcessPhoneGroups extends AbstractProcessor
         $response = Http::withBody(json_encode([
             'name' => $name,
             'description' => $description,
-        ]))->post(normalizeUrl($this->prefix, '/'));
+        ]))->post(UrlBuilder::new($this->prefix, '/'));
         return TelephonyResponseFactory::createDefault($response);
     }
 
@@ -47,9 +46,9 @@ class ProcessPhoneGroups extends AbstractProcessor
             throw new TelephonyHandlerInputDataValidationException("Parameter `groupId` must be greater than zero, provided $groupId");
         }
 
-        $response = Http::withUrlParameters([
-            'phonegroup_id' => $groupId
-        ])->delete(normalizeUrl($this->prefix, "/{phonegroup_id}"));
+        $url = UrlBuilder::new($this->prefix, "/{phonegroup_id}")
+                         ->withUrlParameters(['phonegroup_id' => $groupId]);
+        $response = Http::delete($url);
         return TelephonyResponseFactory::createDefault($response);
     }
 
@@ -62,9 +61,9 @@ class ProcessPhoneGroups extends AbstractProcessor
         {
             throw new TelephonyHandlerInputDataValidationException("Parameter `groupId` must be greater than zero, provided $groupId");
         }
-        $response = Http::withUrlParameters([
-            'phonegroup_id' => $groupId
-        ])->get(normalizeUrl($this->prefix, "/{phonegroup_id}"));
+        $url = UrlBuilder::new($this->prefix, "/{phonegroup_id}")
+                         ->withUrlParameters(['phonegroup_id' => $groupId]);
+        $response = Http::get($url);
         return TelephonyResponseFactory::createDefault($response);
     }
 
@@ -74,13 +73,12 @@ class ProcessPhoneGroups extends AbstractProcessor
         {
             throw new TelephonyHandlerInputDataValidationException("Parameter `groupId` must be greater than zero, provided $groupId");
         }
-
-        $response = Http::withUrlParameters([
-            'phonegroup_id' => $groupId,
-        ])->withBody(json_encode([
+        $url = UrlBuilder::new($this->prefix, "/{phonegroup_id}")
+                         ->withUrlParameters(['phonegroup_id' => $groupId]);
+        $response = Http::withBody(json_encode([
             'name' => $newName,
             'description' => $newDescription,
-        ]))->patch(normalizeUrl($this->prefix, "/{phonegroup_id}"));
+        ]))->patch($url);
         return TelephonyResponseFactory::createDefault($response);
     }
 }

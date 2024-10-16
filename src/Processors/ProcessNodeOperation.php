@@ -4,12 +4,11 @@ namespace Enj0yer\CrmTelephony\Processors;
 
 use Enj0yer\CrmTelephony\Exceptions\TelephonyHandlerInputDataValidationException;
 use Enj0yer\CrmTelephony\Helpers\BotInputDtmfStepSchema;
+use Enj0yer\CrmTelephony\Helpers\UrlBuilder;
 use Enj0yer\CrmTelephony\Processors\AbstractProcessor;
 use Enj0yer\CrmTelephony\Response\TelephonyResponse;
 use Enj0yer\CrmTelephony\Response\TelephonyResponseFactory;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Http\Client\Response;
-use function Enj0yer\CrmTelephony\Helpers\normalizeUrl;
 
 class ProcessNodeOperation extends AbstractProcessor
 {
@@ -34,7 +33,7 @@ class ProcessNodeOperation extends AbstractProcessor
                 "sound_name" => $soundName,
                 "waitexten" => $waitExtEn
             ], $dtmfStepSchema->getActions())
-        ]))->post(normalizeUrl($this->prefix, "/"));
+        ]))->post(UrlBuilder::new($this->prefix, "/"));
         return TelephonyResponseFactory::createDefault($response);
     }
 
@@ -48,10 +47,10 @@ class ProcessNodeOperation extends AbstractProcessor
             throw new TelephonyHandlerInputDataValidationException("Provided wrong arguments");
         }
 
-        $response = Http::withQueryParameters([
-            "bot_id" => $botId,
-            "input_dtmf_node_id" => $inputDtmfNodeId
-        ])->delete(normalizeUrl($this->prefix, "/"));
+        $url = UrlBuilder::new($this->prefix)
+                         ->withQueryParameters(["bot_id" => $botId, 
+                                                            "input_dtmf_node_id" => $inputDtmfNodeId]);
+        $response = Http::delete($url);
         return TelephonyResponseFactory::createDefault($response);
     }
 }

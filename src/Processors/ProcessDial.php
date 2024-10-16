@@ -3,11 +3,10 @@
 namespace Enj0yer\CrmTelephony\Processors;
 
 use Enj0yer\CrmTelephony\Exceptions\TelephonyHandlerInputDataValidationException;
+use Enj0yer\CrmTelephony\Helpers\UrlBuilder;
 use Enj0yer\CrmTelephony\Response\TelephonyResponse;
 use Enj0yer\CrmTelephony\Response\TelephonyResponseFactory;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Http\Client\Response;
-use function Enj0yer\CrmTelephony\Helpers\normalizeUrl;
 
 class ProcessDial extends AbstractProcessor
 {
@@ -21,10 +20,10 @@ class ProcessDial extends AbstractProcessor
             throw new TelephonyHandlerInputDataValidationException("Provided wrong arguments");
         }
 
-        $response = Http::withQueryParameters([
-            "dial_task_id" => $dialTaskId,
-            "caller_id" => $callerId,
-        ])->get(normalizeUrl($this->prefix, "/dial"));
+        $url = UrlBuilder::new($this->prefix, "/dial")
+                         ->withQueryParameters(["dial_task_id" => $dialTaskId,
+                                                "caller_id" => $callerId]);
+        $response = Http::get($url);
         return TelephonyResponseFactory::createDefault($response);
     }
 
@@ -38,10 +37,10 @@ class ProcessDial extends AbstractProcessor
             throw new TelephonyHandlerInputDataValidationException("Provided wrong arguments");
         }
 
-        $response = Http::withQueryParameters([
-            "dial_task_id" => $dialTaskId,
-            "caller_id" => $callerId,
-        ])->get(normalizeUrl($this->prefix, "/answer"));
+        $url = UrlBuilder::new($this->prefix, "/answer")
+                         ->withQueryParameters(["dial_task_id" => $dialTaskId, 
+                                                "caller_id" => $callerId]);
+        $response = Http::get($url);
         return TelephonyResponseFactory::createDefault($response);
     }
 
@@ -55,10 +54,10 @@ class ProcessDial extends AbstractProcessor
             throw new TelephonyHandlerInputDataValidationException("Provided wrong arguments");
         }
 
-        $response = Http::withQueryParameters([
-            "dial_task_id" => $dialTaskId,
-            "caller_id" => $callerId,
-        ])->get(normalizeUrl($this->prefix, "/noanswer"));
+        $url = UrlBuilder::new($this->prefix, "/noanswer")
+                         ->withQueryParameters(["dial_task_id" => $dialTaskId, 
+                                                "caller_id" => $callerId]);
+        $response = Http::get($url);
         return TelephonyResponseFactory::createDefault($response);
     } 
 
@@ -72,11 +71,11 @@ class ProcessDial extends AbstractProcessor
             throw new TelephonyHandlerInputDataValidationException("Provided wrong arguments");
         }
 
-        $response = Http::withQueryParameters([
-            "dial_task_id" => $dialTaskId,
-            "caller_id" => $callerId,
-            "status" => $status,
-        ])->get(normalizeUrl($this->prefix, "/status"));
+        $url = UrlBuilder::new($this->prefix, "/status")
+                         ->withQueryParameters(["dial_task_id" => $dialTaskId,
+                                                "caller_id" => $callerId,
+                                                "status" => $status]);
+        $response = Http::get($url);
         return TelephonyResponseFactory::createDefault($response);
     }
 }

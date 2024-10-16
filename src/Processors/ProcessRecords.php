@@ -3,13 +3,10 @@
 namespace Enj0yer\CrmTelephony\Processors;
 
 use Enj0yer\CrmTelephony\Exceptions\TelephonyHandlerInputDataValidationException;
+use Enj0yer\CrmTelephony\Helpers\UrlBuilder;
 use Enj0yer\CrmTelephony\Response\TelephonyResponse;
 use Enj0yer\CrmTelephony\Response\TelephonyResponseFactory;
-use Illuminate\Http\Client\Response;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
-use function Enj0yer\CrmTelephony\Helpers\normalizeUrl;
 
 class ProcessRecords extends AbstractProcessor
 {
@@ -24,7 +21,7 @@ class ProcessRecords extends AbstractProcessor
         }
 
         $response = Http::withBody($file, 'multipart/form-data')
-            ->post(normalizeUrl($this->prefix, "/upload_record"));
+            ->post(UrlBuilder::new($this->prefix, "/upload_record"));
         return TelephonyResponseFactory::createDefault($response);
     }
 
@@ -37,10 +34,9 @@ class ProcessRecords extends AbstractProcessor
         {
             throw new TelephonyHandlerInputDataValidationException("Provided wrong arguments");
         }
-
-        $response = Http::withUrlParameters([
-            'record_id' => $recordId
-        ])->delete(normalizeUrl($this->prefix, "/delete_record", "/{record_id}"));
+        $url = UrlBuilder::new($this->prefix, "/delete_record", "/{record_id}")
+                         ->withUrlParameters(['record_id' => $recordId]);
+        $response = Http::delete($url);
         return TelephonyResponseFactory::createDefault($response);
     }
 }
