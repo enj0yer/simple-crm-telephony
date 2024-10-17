@@ -13,14 +13,18 @@ class UrlBuilder
 
     public static function new(string ...$url): static
     {
-        $url = static::normalizeUrl($url);
+        $url = static::normalizeUrl(...$url);
         return new static($url);
     }
 
     public static function normalizeUrl(string ...$url): string
     {
-        $regex = "#(?<!https|http:)/{2,}#";
-        return preg_replace($regex, "/", implode("/", $url));
+        $joinedUrl = implode("/", $url);
+        if (str_contains($joinedUrl, "https")) {
+            return preg_replace("#(?<!https:)/{2,}#", "/", $joinedUrl);
+        } else {
+            return preg_replace("#(?<!http:)/{2,}#", "/", $joinedUrl);
+        }
     }
 
     private static function addQueryParameters(string $url, array $parameters): string
@@ -38,8 +42,8 @@ class UrlBuilder
     {
         $new = static::removeSingleTrailingSlash($url);
         foreach ($parameters as $key => $value) {
-            if (str_contains($url, "{". (string) $key."}")) {
-                $new = str_replace("{". (string) $key."}", $value, $url);
+            if (str_contains($new, "{".(string) $key."}")) {
+                $new = str_replace("{".(string) $key."}", $value, $new);
             }
         }
         return $new;
@@ -71,9 +75,4 @@ class UrlBuilder
     {
         return $this->url;
     }
-
-    // private function normalizeUrl(string ...$urls): string 
-    // {
-
-    // }
 }
