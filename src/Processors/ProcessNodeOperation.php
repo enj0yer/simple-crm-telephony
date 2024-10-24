@@ -33,7 +33,7 @@ class ProcessNodeOperation extends AbstractProcessor
                 "sound_name" => $soundName,
                 "waitexten" => $waitExtEn
             ], $dtmfStepSchema->getActions())
-        ]))->post(UrlBuilder::new($this->prefix, "/"));
+        ]), 'application/json')->post(UrlBuilder::new($this->prefix, "/"));
         return TelephonyResponseFactory::createDefault($response);
     }
 

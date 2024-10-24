@@ -23,7 +23,7 @@ class ProcessCalls extends AbstractProcessor
         $response = Http::withBody(json_encode([
             'source' => $source,
             'destination' => $destination
-        ]))->post(UrlBuilder::new($this->prefix, "/"));
+        ]), 'application/json')->post(UrlBuilder::new($this->prefix, "/"));
         return TelephonyResponseFactory::createDefault($response);
     }
 }

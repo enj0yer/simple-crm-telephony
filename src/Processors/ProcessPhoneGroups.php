@@ -32,7 +32,7 @@ class ProcessPhoneGroups extends AbstractProcessor
         $response = Http::withBody(json_encode([
             'name' => $name,
             'description' => $description,
-        ]))->post(UrlBuilder::new($this->prefix, '/'));
+        ]), 'application/json')->post(UrlBuilder::new($this->prefix, '/'));
         return TelephonyResponseFactory::createDefault($response);
     }
 
@@ -78,7 +78,7 @@ class ProcessPhoneGroups extends AbstractProcessor
         $response = Http::withBody(json_encode([
             'name' => $newName,
             'description' => $newDescription,
-        ]))->patch($url);
+        ]), 'application/json')->patch($url);
         return TelephonyResponseFactory::createDefault($response);
     }
 }

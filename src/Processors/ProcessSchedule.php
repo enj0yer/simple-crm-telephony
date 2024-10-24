@@ -25,7 +25,7 @@ class ProcessSchedule extends AbstractProcessor
         
         $response = Http::withBody(json_encode([
             'name' => $name
-            ]))->post(UrlBuilder::new($this->prefix, '/'));
+        ]), 'application/json')->post(UrlBuilder::new($this->prefix, '/'));
         return TelephonyResponseFactory::createDefault($response);
     }
         
@@ -43,7 +43,7 @@ class ProcessSchedule extends AbstractProcessor
         $response = Http::withBody(json_encode([
             'schedule_id' => $scheduleId,
             'name' => $name
-        ]))->patch(UrlBuilder::new($this->prefix, '/'));
+        ]), 'application/json')->patch(UrlBuilder::new($this->prefix, '/'));
         return TelephonyResponseFactory::createDefault($response);
     }
 
@@ -104,7 +104,7 @@ class ProcessSchedule extends AbstractProcessor
                          ->withUrlParameters(['schedule_id' => $scheduleId]);
         $response = Http::withBody(json_encode(
             array_map(fn ($key) => ['key' => $key, 'value' => $params[$key]], array_keys($params))
-        ))->post($url);
+        ), 'application/json')->post($url);
         return TelephonyResponseFactory::createDefault($response);
     }
 

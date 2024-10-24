@@ -24,7 +24,7 @@ class ProcessBotMapping extends AbstractProcessor
         $response = Http::withBody(json_encode([
             "bot_id" => $botId,
             "extensions" => $extensions
-        ]))->post(UrlBuilder::new($this->prefix, "/"));
+        ]), 'application/json')->post(UrlBuilder::new($this->prefix, "/"));
         return TelephonyResponseFactory::createDefault($response);
     }
 

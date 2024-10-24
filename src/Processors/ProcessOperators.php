@@ -30,7 +30,7 @@ class ProcessOperators extends AbstractProcessor
             'extension' => $extension,
             'password' => $password,
             'user_context' => $userContext
-        ]))->post(UrlBuilder::new($this->prefix, '/'));
+        ]), 'application/json')->post(UrlBuilder::new($this->prefix, '/'));
         return TelephonyResponseFactory::createDefault($response);
     }
 
@@ -60,7 +60,7 @@ class ProcessOperators extends AbstractProcessor
             'extension' => $extension,
             'password' => $password,
             'user_context' => $userContext
-        ]))->put(UrlBuilder::new($this->prefix, '/'));
+        ]), 'application/json')->put(UrlBuilder::new($this->prefix, '/'));
         return TelephonyResponseFactory::createDefault($response);
     }
 

@@ -24,7 +24,7 @@ class ProcessBotOperation extends AbstractProcessor
         $response = Http::withBody(json_encode([
             "name" => $name,
             "input_dtmf_step" => $inputDtmfStep
-        ]))->post(UrlBuilder::new($this->prefix, "/"));
+        ]), 'application/json')->post(UrlBuilder::new($this->prefix, "/"));
         return TelephonyResponseFactory::createDefault($response);
     }
 

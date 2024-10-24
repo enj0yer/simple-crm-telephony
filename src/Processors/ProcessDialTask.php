@@ -55,7 +55,7 @@ class ProcessDialTask extends AbstractProcessor
             "phone_group_id" => $phoneGroupId,
             "destination" => $destination,
             "destination_context" => $destinationContext,
-        ]))->post(UrlBuilder::new($this->prefix, "/"));
+        ]), 'application/json')->post(UrlBuilder::new($this->prefix, "/"));
         return TelephonyResponseFactory::createDefault($response);
     }
 
@@ -87,7 +87,7 @@ class ProcessDialTask extends AbstractProcessor
             "phone_group_id" => $phoneGroupId,
             "destination" => $destination,
             "destination_context" => $destinationContext,
-        ]))->patch($url);
+        ]), 'application/json')->patch($url);
         return TelephonyResponseFactory::createDefault($response);
     }
 

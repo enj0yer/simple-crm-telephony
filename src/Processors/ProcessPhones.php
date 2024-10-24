@@ -46,7 +46,8 @@ class ProcessPhones extends AbstractProcessor
         $url = UrlBuilder::new($this->prefix, "/{phonegroup_id}")
                             ->withUrlParameters(['phonegroup_id' => $groupId]);
         $response = Http::withBody(
-            json_encode(array_map(fn ($element) => ['phone' => $element], $phones))
+            json_encode(array_map(fn ($element) => ['phone' => $element], $phones)),
+            'application/json'
         )->post($url);
         return TelephonyResponseFactory::createDefault($response);
     }
@@ -67,7 +68,8 @@ class ProcessPhones extends AbstractProcessor
         $url = UrlBuilder::new($this->prefix, "/{phonegroup_id}")
                          ->withUrlParameters(['phonegroup_id' => $groupId]);
         $response = Http::withBody(
-            json_encode($phones)
+            json_encode($phones),
+            'application/json'
         )->delete($url);
         return TelephonyResponseFactory::createDefault($response);
     }

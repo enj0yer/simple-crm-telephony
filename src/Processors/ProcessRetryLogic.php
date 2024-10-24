@@ -26,7 +26,7 @@ class ProcessRetryLogic extends AbstractProcessor
         $response = Http::withBody(json_encode([
             'name' => $name,
             'description' => $description,
-        ]))->post(UrlBuilder::new($this->prefix, "/logic"));
+        ]), 'application/json')->post(UrlBuilder::new($this->prefix, "/logic"));
         return TelephonyResponseFactory::createDefault($response);
     }
 
@@ -45,7 +45,7 @@ class ProcessRetryLogic extends AbstractProcessor
         $response = Http::withBody(json_encode([
             'name' => $name,
             'description' => $description,
-        ]))->patch($url);
+        ]), 'application/json')->patch($url);
         return TelephonyResponseFactory::createDefault($response);
     }
 
@@ -123,7 +123,7 @@ class ProcessRetryLogic extends AbstractProcessor
                 "param_key" => $key,
                 "param_value" => $params[$key]
             ], array_keys($params)))
-        ))
+        ), 'application/json')
           ->post($url);
           return TelephonyResponseFactory::createDefault($response);
     }
@@ -149,7 +149,7 @@ class ProcessRetryLogic extends AbstractProcessor
             "retry_logic_id" => $logicId,
             "param_key" => $key,
             "param_value" => $value
-        ]))->patch($url);
+        ]), 'application/json')->patch($url);
         return TelephonyResponseFactory::createDefault($response);
     }
 
