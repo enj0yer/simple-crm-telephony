@@ -128,4 +128,29 @@ class ProcessDialTask extends AbstractProcessor
         $response = Http::post($url);
         return TelephonyResponseFactory::createDefault($response);
     }
+
+
+    public function start(int $dialTaskId)
+    {
+        if (with($dialTaskId, fn ($value) => empty($value)))
+        {
+            throw new TelephonyHandlerInputDataValidationException("Provided wrong arguments");
+        }
+
+        $url = UrlBuilder::new($this->prefix, "/play");
+        $response = Http::post($url);
+        return TelephonyResponseFactory::createDefault($response);
+    }
+
+    public function stop(int $dialTaskId)
+    {
+        if (with($dialTaskId, fn ($value) => empty($value)))
+        {
+            throw new TelephonyHandlerInputDataValidationException("Provided wrong arguments");
+        }
+
+        $url = UrlBuilder::new($this->prefix, "/stop");
+        $response = Http::post($url);
+        return TelephonyResponseFactory::createDefault($response);
+    }
 }
