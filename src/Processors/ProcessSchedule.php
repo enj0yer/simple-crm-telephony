@@ -98,7 +98,7 @@ class ProcessSchedule extends AbstractProcessor
         $url = UrlBuilder::new($this->prefix, "/parameters", "/{schedule_id}")
                          ->withUrlParameters(['schedule_id' => $scheduleId]);
         $response = Http::withBody(json_encode(
-            array_map(fn ($key) => ['key' => $key, 'value' => $params[$key]], array_keys($params))
+            $params
         ), 'application/json')->post($url);
         return TelephonyResponseFactory::createDefault($response);
     }
