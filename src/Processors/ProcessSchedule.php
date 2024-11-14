@@ -94,11 +94,6 @@ class ProcessSchedule extends AbstractProcessor
         {
             throw new TelephonyHandlerInputDataValidationException("Parameter `scheduleId` must be greater than zero, provided $scheduleId");
         }
-        
-        if (!isArrayWithOnlyNonEmptyKeysAndValues($params))
-        {
-            throw new TelephonyHandlerInputDataValidationException("Parameter `params` must be an array, which contains only non empty keys and values");
-        }
 
         $url = UrlBuilder::new($this->prefix, "/parameters", "/{schedule_id}")
                          ->withUrlParameters(['schedule_id' => $scheduleId]);
