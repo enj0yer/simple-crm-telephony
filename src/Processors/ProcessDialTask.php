@@ -153,4 +153,10 @@ class ProcessDialTask extends AbstractProcessor
         $response = Http::post($url);
         return TelephonyResponseFactory::createDefault($response);
     }
+
+    public function statistics()
+    {
+        $response = Http::get(UrlBuilder::new($this->prefix, "/statistics"));
+        return TelephonyResponseFactory::createDefault($response);
+    }
 }
