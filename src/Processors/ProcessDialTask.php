@@ -149,7 +149,9 @@ class ProcessDialTask extends AbstractProcessor
             throw new TelephonyHandlerInputDataValidationException("Provided wrong arguments");
         }
 
-        $url = UrlBuilder::new($this->prefix, "/play");
+        $url = UrlBuilder::new($this->prefix, "/play")->withQueryParameters([
+            'dialtask_id' => $dialTaskId
+        ]);
         $response = Http::post($url);
         return TelephonyResponseFactory::createDefault($response);
     }
@@ -161,7 +163,9 @@ class ProcessDialTask extends AbstractProcessor
             throw new TelephonyHandlerInputDataValidationException("Provided wrong arguments");
         }
 
-        $url = UrlBuilder::new($this->prefix, "/stop");
+        $url = UrlBuilder::new($this->prefix, "/stop")->withQueryParameters([
+            'dialtask_id' => $dialTaskId
+        ]);
         $response = Http::post($url);
         return TelephonyResponseFactory::createDefault($response);
     }
