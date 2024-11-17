@@ -39,9 +39,12 @@ class ProcessDialTask extends AbstractProcessor
                            int    $announcementId,
                            int    $phoneGroupId,
                            string $destination,
-                           string $destinationContext): TelephonyResponse
+                           string $destinationContext,
+                           int    $concurrentCalls = 0,
+                           bool   $isActive = false,
+                           string $description = "The description of the DailTask"): TelephonyResponse
     {
-        if (with([$name, $scheduleId, $retryLogicId, $announcementId, $phoneGroupId, $destination, $destinationContext],
+        if (with([$name, $scheduleId, $retryLogicId, $announcementId, $phoneGroupId, $destination, $destinationContext, $description],
             fn ($params) => count(array_filter($params, fn ($value) => empty($value))) > 0))
         {
             throw new TelephonyHandlerInputDataValidationException("Provided wrong arguments");
@@ -55,6 +58,9 @@ class ProcessDialTask extends AbstractProcessor
             "phone_group_id" => $phoneGroupId,
             "destination" => $destination,
             "destination_context" => $destinationContext,
+            "concurrent_calls" => $concurrentCalls,
+            "is_active" => $isActive,
+            "description" => $description
         ]), 'application/json')->post(UrlBuilder::new($this->prefix, "/"));
         return TelephonyResponseFactory::createDefault($response);
     }
@@ -69,9 +75,12 @@ class ProcessDialTask extends AbstractProcessor
                            int    $announcementId,
                            int    $phoneGroupId,
                            string $destination,
-                           string $destinationContext): TelephonyResponse
+                           string $destinationContext,
+                           int    $concurrentCalls = 0,
+                           bool   $isActive = false,
+                           string $description = "The description of the DailTask"): TelephonyResponse
     {
-        if (with([$dialTaskId, $name, $scheduleId, $retryLogicId, $announcementId, $phoneGroupId, $destination, $destinationContext],
+        if (with([$dialTaskId, $name, $scheduleId, $retryLogicId, $announcementId, $phoneGroupId, $destination, $destinationContext. $description],
             fn ($params) => count(array_filter($params, fn ($value) => empty($value))) > 0))
         {
             throw new TelephonyHandlerInputDataValidationException("Provided wrong arguments");
@@ -87,6 +96,9 @@ class ProcessDialTask extends AbstractProcessor
             "phone_group_id" => $phoneGroupId,
             "destination" => $destination,
             "destination_context" => $destinationContext,
+            "concurrent_calls" => $concurrentCalls,
+            "is_active" => $isActive,
+            "description" => $description
         ]), 'application/json')->patch($url);
         return TelephonyResponseFactory::createDefault($response);
     }
