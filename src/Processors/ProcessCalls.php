@@ -13,7 +13,7 @@ class ProcessCalls extends AbstractProcessor
     /**
      * @throws TelephonyHandlerInputDataValidationException
      */
-    public function make(string $source, string $destination): TelephonyResponse
+    public function make(string $source, string $destination, string $originateContext = "", string $destinationContext = ""): TelephonyResponse
     {
         if (with([$source, $destination], fn ($args) => count(array_filter($args, fn ($value) => empty($value))) > 0))
         {
@@ -22,7 +22,9 @@ class ProcessCalls extends AbstractProcessor
 
         $response = Http::withBody(json_encode([
             'source' => $source,
-            'destination' => $destination
+            'destination' => $destination,
+            'originate_context' => $originateContext,
+            'destination_context' => $destinationContext
         ]), 'application/json')->post(UrlBuilder::new($this->prefix, "/"));
         return TelephonyResponseFactory::createDefault($response);
     }
