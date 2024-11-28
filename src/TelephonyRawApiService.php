@@ -2,6 +2,7 @@
 
 namespace Enj0yer\CrmTelephony;
 
+use Enj0yer\CrmTelephony\Processors\ProcessBlackList;
 use Enj0yer\CrmTelephony\Processors\ProcessBot;
 use Enj0yer\CrmTelephony\Processors\ProcessBotMapping;
 use Enj0yer\CrmTelephony\Processors\ProcessBotOperation;
@@ -15,6 +16,9 @@ use Enj0yer\CrmTelephony\Processors\ProcessPhones;
 use Enj0yer\CrmTelephony\Processors\ProcessRecords;
 use Enj0yer\CrmTelephony\Processors\ProcessRetryLogic;
 use Enj0yer\CrmTelephony\Processors\ProcessSchedule;
+use Enj0yer\CrmTelephony\Processors\ProcessIntegrations;
+use Enj0yer\CrmTelephony\Processors\ProcessTrunks;
+
 
 class TelephonyRawApiService
 {
@@ -81,5 +85,20 @@ class TelephonyRawApiService
     public function bot(): ProcessBot
     {
         return new ProcessBot("/bot");
+    }
+
+    public function integrations(): ProcessIntegrations
+    {
+        return new ProcessIntegrations("/intergations");
+    }
+
+    public function trunks(): ProcessTrunks
+    {
+        return new ProcessTrunks("/trunk");
+    }
+
+    public function blacklist(): ProcessBlackList
+    {
+        return new ProcessBlackList("/blacklist");
     }
 }
